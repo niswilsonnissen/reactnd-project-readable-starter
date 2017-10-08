@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import Voting from "./Voting";
+import AdminButtons from "./AdminButtons";
 
 class PostDetail extends Component {
   render() {
@@ -57,57 +59,49 @@ class PostDetail extends Component {
 
     return (
       <div className="post-detail">
-        <div className="voting">
-          <button>Up</button>
-          <button>Down</button>
-        </div>
-        <h1>{post.title}</h1>
-        <div className="post-detail-info">
-          by {post.author}, current score: {post.voteScore}
-        </div>
-        <div className="post-detail-body">{post.body}</div>
-        <div className="post-admin">
-          <button>Edit post</button>
-          <button>Delete post</button>
-        </div>
-        <div className="post-detail-comments">
-          <h2>
-            {postComments.length}{" "}
-            {postComments.length === 1 ? "comment" : "comments"}
-          </h2>
-          <ol>
-            {postComments.map(comment => (
-              <li key={comment.id}>
-                <div className="comment-detail">
-                  <div className="voting">
-                    <button>Up</button>
-                    <button>Down</button>
-                  </div>
-                  <div className="comment-detail-body">{comment.body}</div>
-                  <div className="comment-detail-info">
-                    by {comment.author}, current score: {comment.voteScore}
-                  </div>
-                  <div className="admin">
-                    <button>Edit comment</button>
-                    <button>Delete comment</button>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-        <form className="post-details-comment-form">
-          <h3>Add new comment</h3>
-          <div className="group">
-            <textarea placeholder="Write comment ..." />
+        <div className="post">
+          <Voting voteScore={post.voteScore} />
+          <div className="content">
+            <h3>{post.title}</h3>
+            <div className="post-info">
+              by {post.author}, comments: {postComments.length}
+            </div>
+            <div className="post-body">{post.body}</div>
+            <div className="post-comments">
+              <h4>
+                {postComments.length}{" "}
+                {postComments.length === 1 ? "comment" : "comments"}
+              </h4>
+              <ol>
+                {postComments.map(comment => (
+                  <li key={comment.id}>
+                    <div className="comment">
+                      <Voting voteScore={comment.voteScore} />
+                      <div className="content">
+                        <div className="comment-body">{comment.body}</div>
+                        <div className="comment-info">by {comment.author}</div>
+                      </div>
+                      <AdminButtons name="comment" />
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <form className="post-comment-form">
+              <h4>Add new comment</h4>
+              <div className="group">
+                <textarea placeholder="Write comment ..." />
+              </div>
+              <div className="group">
+                <input type="text" placeholder="Type your username" />
+              </div>
+              <div className="group">
+                <button>Add comment</button>
+              </div>
+            </form>
           </div>
-          <div className="group">
-            <input type="text" placeholder="Type your username" />
-          </div>
-          <div className="group">
-            <button>Add comment</button>
-          </div>
-        </form>
+          <AdminButtons name="post" />
+        </div>
       </div>
     );
   }

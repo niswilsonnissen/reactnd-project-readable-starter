@@ -31,7 +31,216 @@
   }
 }
 
+.header {
+  background-color: rgb(92, 130, 255);
+  color: #fff;
+}
+
+.header h1 {
+  margin: 0;
+  padding: 8px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.header h1 a {
+  color: #fff;
+  text-decoration: none;
+}
+
 .container {
   display: grid;
   grid-template-columns: 70% 30%;
+  grid-column-gap: 1em;
+  margin: 0 1em;
+}
+
+.filter-bar {
+  margin: 16px 0 0 0;
+  padding: 8px;
+  border-bottom: solid 1px #ccc;
+  text-align: right;
+  color: #777;
+  font-size: smaller;
+}
+
+.post {
+  margin: 1em 0;
+  display: grid;
+  grid-template-columns: 17% 60% 23%;
+}
+
+.post .content h3 {
+  margin: 0;
+  padding: 0;
+}
+
+.post .content .post-info {
+  font-size: small;
+  color: #999;
+  padding: 4px 0;
+}
+
+.post .content .post-body {
+  margin: 16px 0;
+  color: #333;
+}
+
+.post-comments h4 {
+  margin: 0;
+  padding: 16px 0;
+  border-top: solid 1px #ccc;
+}
+
+.post-comments ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-comments ol li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-comment-form {
+  margin: 0;
+  padding: 0;
+}
+
+.post-comment-form h4 {
+  margin: 16px 0 8px 0;
+  padding: 0;
+}
+
+.post-comment-form textarea {
+  width: 60%;
+  height: 80px;
+  font-size: 16px;
+  padding: 4px;
+  margin: 0 0 8px 0;
+}
+
+.post-comment-form input[type="text"] {
+  font-size: 16px;
+  padding: 4px;
+  width: 60%;
+  margin: 0 0 8px 0;
+}
+
+.post-comment-form button {
+  font-size: 16px;
+  padding: 8px;
+  border: solid 0 transparent;
+  border-radius: 6px;
+  background-color: rgb(160, 182, 255);
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.comment {
+  display: grid;
+  grid-template-columns: 17% 60% 23%;
+  margin: 0 0 16px 0;
+}
+
+.comment .comment-info {
+  font-size: small;
+  color: #999;
+  padding: 4px 0;
+}
+
+.voting > span {
+  margin: 4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: solid 4px rgb(160, 182, 255);
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.voting button {
+  margin: 4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+  background-color: rgb(160, 182, 255);
+  cursor: pointer;
+}
+
+.voting .vote-score {
+  position: absolute;
+  width: 24px;
+  height: 21px;
+  text-align: center;
+  padding-top: 4px;
+}
+
+.icon {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  width: 32px;
+  height: 32px;
+}
+
+.icon-thumbsup {
+  background-image: url(/icons/noun_1172486_cc.png);
+  background-position: 1px 5px;
+}
+
+.icon-thumbsdown {
+  background-image: url(/icons/noun_1172492_cc.png);
+  background-position: 2px 6px;
+}
+
+.icon-edit {
+  background-image: url(/icons/noun_1198382_cc.png);
+  background-position: 2px 6px;
+}
+
+.icon-delete {
+  background-image: url(/icons/noun_858220_cc.png);
+  background-position: 2px 6px;
+}
+
+.admin {
+  text-align: right;
+}
+
+.admin button {
+  border: solid 0 transparent;
+  background-color: white;
+  cursor: pointer;
+}
+
+.admin button .icon {
+  opacity: 0.3;
+}
+
+.admin button:hover .icon {
+  opacity: 1;
+}
+
+.categories {
+  padding: 16px 16px;
+  border-left: solid 1px #ddd;
+}
+
+.categories h2,
+.categories h3 {
+  margin: 0;
+  padding: 0;
+}
+
+.categories ol {
+  list-style: none;
+  margin: 0 0 32px 0;
+  padding: 0;
+}
+
+.categories ol li {
+  padding: 0;
+  margin: 8px 0;
 }

@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import Voting from "./Voting";
+import AdminButtons from "./AdminButtons";
+import FilterBar from "./FilterBar";
 
 class MainView extends Component {
   render() {
@@ -46,34 +49,22 @@ class MainView extends Component {
     return (
       <div className="container">
         <div className="posts">
-          <h1>Latest posts</h1>
-          <div className="filter-bar">
-            Order by:{" "}
-            <select>
-              <option value="date">Date</option>
-              <option value="votes">Votes</option>
-            </select>
-          </div>
+          <FilterBar />
           {Object.keys(posts).map(key => {
             const post = posts[key];
             const category = categories.find(cat => cat.name === post.category);
             return (
               <div key={key} className="post">
-                <div className="voting">
-                  <button>Up</button>
-                  <button>Down</button>
+                <Voting voteScore={post.voteScore} />
+                <div className="content">
+                  <h3>
+                    <a href={`/${category.path}/${key}`}>{post.title}</a>
+                  </h3>
+                  <div className="post-info">
+                    posted by: {post.author}, comments: XYZ
+                  </div>
                 </div>
-                <h3>
-                  <a href={`/${category.path}/${key}`}>{post.title}</a>
-                </h3>
-                <div className="post-info">
-                  posted by: {post.author}, comments: XYZ, votes:{" "}
-                  {post.voteScore}
-                </div>
-                <div className="post-admin">
-                  <button>Edit post</button>
-                  <button>Delete post</button>
-                </div>
+                <AdminButtons name="post" />
               </div>
             );
           })}

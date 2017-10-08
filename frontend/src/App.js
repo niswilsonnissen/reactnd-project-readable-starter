@@ -9,6 +9,11 @@ class App extends Component {
   render() {
     return (
       <div className="app">
+        <div className="header">
+          <h1>
+            <a href="/">Readable - Udacity student project</a>
+          </h1>
+        </div>
         <Route
           path="/:category/:page"
           render={({ history, match }) => (

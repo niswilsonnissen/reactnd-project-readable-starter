@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import Voting from "./Voting";
+import AdminButtons from "./AdminButtons";
+import FilterBar from "./FilterBar";
 
 class CategoryView extends Component {
   render() {
@@ -48,35 +51,43 @@ class CategoryView extends Component {
     );
 
     return (
-      <div className="category">
-        <h1>Category: {category.name}</h1>
-        <div className="filter-bar">
-          Order by:{" "}
-          <select>
-            <option value="date">Date</option>
-            <option value="votes">Votes</option>
-          </select>
+      <div class="container">
+        <div className="posts">
+          <h2>Category: {category.name}</h2>
+          <FilterBar />
+          {categoryPosts.map(post => {
+            return (
+              <div key={post.id} className="post">
+                <Voting voteScore={post.voteScore} />
+                <div className="content">
+                  <h3>
+                    <a href={`/${category.path}/${post.id}`}>{post.title}</a>
+                  </h3>
+                  <div className="post-info">
+                    posted by: {post.author}, comments: XYZ
+                  </div>
+                </div>
+                <AdminButtons name="post" />
+              </div>
+            );
+          })}
         </div>
-        {categoryPosts.map(post => {
-          return (
-            <div key={post.id} className="post">
-              <div className="voting">
-                <button>Up</button>
-                <button>Down</button>
-              </div>
-              <h3>
-                <a href={`/${category.path}/${post.id}`}>{post.title}</a>
-              </h3>
-              <div className="post-info">
-                posted by: {post.author}, comments: XYZ, votes: {post.voteScore}
-              </div>
-              <div className="post-admin">
-                <button>Edit post</button>
-                <button>Delete post</button>
-              </div>
-            </div>
-          );
-        })}
+        <div className="categories">
+          <h2>Categories</h2>
+          <ol>
+            {categories.map(({ name, path }) => (
+              <li key={path}>
+                <a href={`/${path}/`}>{name}</a>
+              </li>
+            ))}
+          </ol>
+          <h3>All posts</h3>
+          <ol>
+            <li>
+              <a href="/">Frontpage</a>
+            </li>
+          </ol>
+        </div>
       </div>
     );
   }
