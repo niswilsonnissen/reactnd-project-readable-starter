@@ -93,10 +93,16 @@ class PostDetail extends Component {
                 <textarea placeholder="Write comment ..." />
               </div>
               <div className="group">
-                <input type="text" placeholder="Type your username" />
+                <label for="author">Author</label>
+                <input
+                  type="text"
+                  name="author"
+                  id="author"
+                  placeholder="Type your username"
+                />
               </div>
               <div className="group">
-                <button>Add comment</button>
+                <button className="btn">Add comment</button>
               </div>
             </form>
           </div>
