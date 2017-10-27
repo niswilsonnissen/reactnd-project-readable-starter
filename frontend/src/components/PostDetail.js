@@ -1,32 +1,14 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+
 import Voting from "./Voting";
 import AdminButtons from "./AdminButtons";
+import { votePostUp, votePostDown } from "../actions";
 
 class PostDetail extends Component {
   render() {
-    const posts = {
-      "8xf0y6ziyjabvozdd253nd": {
-        id: "8xf0y6ziyjabvozdd253nd",
-        timestamp: 1467166872634,
-        title: "Udacity is the best place to learn React",
-        body: "Everyone says so after all.",
-        author: "thingtwo",
-        category: "react",
-        voteScore: 6,
-        deleted: false
-      },
-      "6ni6ok3ym7mf1p33lnez": {
-        id: "6ni6ok3ym7mf1p33lnez",
-        timestamp: 1468479767190,
-        title: "Learn Redux in 10 minutes!",
-        body:
-          "Just kidding. It takes more than 10 minutes to learn technology.",
-        author: "thingone",
-        category: "redux",
-        voteScore: -5,
-        deleted: false
-      }
-    };
+    const { posts, votePostUp, votePostDown } = this.props;
 
     const post = posts[this.props.page];
 
@@ -60,7 +42,12 @@ class PostDetail extends Component {
     return (
       <div className="post-detail">
         <div className="post">
-          <Voting voteScore={post.voteScore} />
+          <Voting
+            id={post.id}
+            voteScore={post.voteScore}
+            voteUp={votePostUp}
+            voteDown={votePostDown}
+          />
           <div className="content">
             <h3>{post.title}</h3>
             <div className="post-info">
@@ -76,7 +63,7 @@ class PostDetail extends Component {
                 {postComments.map(comment => (
                   <li key={comment.id}>
                     <div className="comment">
-                      <Voting voteScore={comment.voteScore} />
+                      <Voting id={comment.id} voteScore={comment.voteScore} />
                       <div className="content">
                         <div className="comment-body">{comment.body}</div>
                         <div className="comment-info">by {comment.author}</div>
@@ -93,7 +80,7 @@ class PostDetail extends Component {
                 <textarea placeholder="Write comment ..." />
               </div>
               <div className="group">
-                <label for="author">Author</label>
+                <label htmlFor="author">Author</label>
                 <input
                   type="text"
                   name="author"
@@ -113,4 +100,17 @@ class PostDetail extends Component {
   }
 }
 
-export default PostDetail;
+function mapStateToProps(state) {
+  return state;
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    votePostUp: data => dispatch(votePostUp(data)),
+    votePostDown: data => dispatch(votePostDown(data))
+  };
+}
+
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(PostDetail)
+);

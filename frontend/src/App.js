@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Route, Link } from "react-router-dom";
+import { withRouter, Switch, Route, Link } from "react-router-dom";
+import { connect } from "react-redux";
 import "./App.css";
 import MainView from "./components/MainView";
 import PostDetail from "./components/PostDetail";
@@ -13,7 +14,7 @@ class App extends Component {
         <div className="header">
           <div className="identity">
             <h1>
-              <a href="/">Readable</a>
+              <Link to="/">Readable</Link>
             </h1>
           </div>
           <div className="toolbar">
@@ -22,27 +23,29 @@ class App extends Component {
             </Link>
           </div>
         </div>
-        <Route exact path="/post" render={({ history }) => <PostForm />} />
-        <Route
-          path="/:category/:page"
-          render={({ history, match }) => (
-            <PostDetail
-              category={match.params.category}
-              page={match.params.page}
-            />
-          )}
-        />
-        <Route
-          exact
-          path="/:category"
-          render={({ history, match }) => {
-            if (match.params.category !== "post") {
-              return <CategoryView category={match.params.category} />;
-            }
-            return null;
-          }}
-        />
-        <Route exact path="/" render={({ history }) => <MainView />} />
+        <Switch>
+          <Route exact path="/post/" render={({ history }) => <PostForm />} />
+          <Route
+            path="/:category/:page"
+            render={({ history, match }) => (
+              <PostDetail
+                category={match.params.category}
+                page={match.params.page}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/:category"
+            render={({ history, match }) => {
+              if (match.params.category !== "post") {
+                return <CategoryView category={match.params.category} />;
+              }
+              return null;
+            }}
+          />
+          <Route exact path="/" render={({ history }) => <MainView />} />
+        </Switch>
         <div className="footer">
           Udacity student project by Nis Wilson Nissen 2017. Icons by{" "}
           <a href="https://thenounproject.com/coquet_adrien/">
@@ -57,4 +60,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(connect()(App));

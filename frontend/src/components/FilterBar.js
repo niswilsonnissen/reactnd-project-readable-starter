@@ -18,7 +18,9 @@ class FilterBar extends Component {
         Order posts by:{" "}
         <select>
           {sortOptions.map(option => (
-            <option value={option.value}>{option.text}</option>
+            <option key={option.value} value={option.value}>
+              {option.text}
+            </option>
           ))}
         </select>
       </div>
