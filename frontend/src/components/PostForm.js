@@ -3,6 +3,7 @@ import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import * as uuid from "uuid";
 import { addPost } from "../actions";
+import { capitalize } from "../utils/helpers";
 
 class PostForm extends Component {
   state = {
@@ -14,15 +15,25 @@ class PostForm extends Component {
 
   handleAddPost = e => {
     e.preventDefault();
+    const { history, categories } = this.props;
     const newPost = {
       ...this.state,
       id: uuid.v1()
     };
+    const category = categories.find(c => c.name === newPost.category);
     this.props.addPost(newPost);
+    this.setState({
+      category: "react",
+      title: "",
+      body: "",
+      author: ""
+    });
+    history.push(`/${category.path}/${newPost.id}`);
   };
 
   render() {
-    const { category, title, body, author } = this.state;
+    const { categories } = this.props;
+    const { category, title, body, author, postWasAdded } = this.state;
 
     return (
       <form className="post-form">
@@ -32,12 +43,14 @@ class PostForm extends Component {
           <select
             name="category"
             id="category"
-            defaultValue={category}
+            value={category}
             onChange={e => this.setState({ category: e.target.value })}
           >
-            <option value="react">React</option>
-            <option value="redux">Redux</option>
-            <option value="udacity">Udacity</option>
+            {categories.map(c => (
+              <option key={c.path} value={c.path}>
+                {capitalize(c.name)}
+              </option>
+            ))}
           </select>
         </div>
         <div className="group">

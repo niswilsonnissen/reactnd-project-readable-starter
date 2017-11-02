@@ -51,7 +51,6 @@ const initialPostsState = {
 
 function posts(state = initialPostsState, action) {
   const { post } = action;
-  console.log("Post data: ", post);
 
   switch (action.type) {
     case ADD_POST:

@@ -15,33 +15,39 @@ export const VOTE_COMMENT_DOWN = "VOTE_COMMENT_DOWN";
 export function addPost({ id, category, author, title, body }) {
   return {
     type: ADD_POST,
-    id,
-    category,
-    author,
-    title,
-    body,
-    timestamp: Date.now(),
-    voteScore: 1,
-    deleted: false
+    post: {
+      id,
+      category,
+      author,
+      title,
+      body,
+      timestamp: Date.now(),
+      voteScore: 1,
+      deleted: false
+    }
   };
 }
 
 export function updatePost({ id, category, author, title, body }) {
   return {
     type: UPDATE_POST,
-    id,
-    category,
-    author,
-    title,
-    body
+    post: {
+      id,
+      category,
+      author,
+      title,
+      body
+    }
   };
 }
 
 export function deletePost({ id }) {
   return {
     type: DELETE_POST,
-    id,
-    deleted: true
+    post: {
+      id,
+      deleted: true
+    }
   };
 }
 
