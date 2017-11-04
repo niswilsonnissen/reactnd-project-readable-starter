@@ -68,3 +68,19 @@ export function votePostDown({ id }) {
     }
   };
 }
+
+export function addComment({ id, parentId, body, author }) {
+  return {
+    type: ADD_COMMENT,
+    comment: {
+      id,
+      parentId,
+      timestamp: Date.now(),
+      body,
+      author,
+      voteScore: 0,
+      deleted: false,
+      parentDeleted: false
+    }
+  };
+}

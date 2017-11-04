@@ -33,7 +33,7 @@ class PostForm extends Component {
 
   render() {
     const { categories } = this.props;
-    const { category, title, body, author, postWasAdded } = this.state;
+    const { category, title, body, author } = this.state;
 
     return (
       <form className="post-form">
@@ -69,7 +69,7 @@ class PostForm extends Component {
             name="body"
             id="body"
             style={{ height: 80 + "px" }}
-            value={this.state.body}
+            value={body}
             onChange={e => this.setState({ body: e.target.value })}
           />
         </div>
@@ -79,7 +79,7 @@ class PostForm extends Component {
             type="text"
             name="author"
             id="author"
-            value={this.state.author}
+            value={author}
             onChange={e => this.setState({ author: e.target.value })}
           />
         </div>

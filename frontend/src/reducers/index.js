@@ -4,7 +4,8 @@ import {
   UPDATE_POST,
   DELETE_POST,
   VOTE_POST_UP,
-  VOTE_POST_DOWN
+  VOTE_POST_DOWN,
+  ADD_COMMENT
 } from "../actions";
 
 const initialCategoriesState = [
@@ -116,7 +117,15 @@ const initialCommentsState = {
 };
 
 function comments(state = initialCommentsState, action) {
+  const { comment } = action;
   switch (action.type) {
+    case ADD_COMMENT:
+      return {
+        ...state,
+        [comment.id]: {
+          ...comment
+        }
+      };
     default:
       return state;
   }

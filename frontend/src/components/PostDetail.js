@@ -4,36 +4,15 @@ import { connect } from "react-redux";
 
 import Voting from "./Voting";
 import AdminButtons from "./AdminButtons";
+import CommentForm from "./CommentForm";
+
 import { votePostUp, votePostDown } from "../actions";
 
 class PostDetail extends Component {
   render() {
-    const { posts, votePostUp, votePostDown } = this.props;
+    const { posts, comments, votePostUp, votePostDown } = this.props;
 
     const post = posts[this.props.page];
-
-    const comments = {
-      "894tuq4ut84ut8v4t8wun89g": {
-        id: "894tuq4ut84ut8v4t8wun89g",
-        parentId: "8xf0y6ziyjabvozdd253nd",
-        timestamp: 1468166872634,
-        body: "Hi there! I am a COMMENT.",
-        author: "thingtwo",
-        voteScore: 6,
-        deleted: false,
-        parentDeleted: false
-      },
-      "8tu4bsun805n8un48ve89": {
-        id: "8tu4bsun805n8un48ve89",
-        parentId: "8xf0y6ziyjabvozdd253nd",
-        timestamp: 1469479767190,
-        body: "Comments. Are. Cool.",
-        author: "thingone",
-        voteScore: -5,
-        deleted: false,
-        parentDeleted: false
-      }
-    };
 
     const postComments = Object.values(comments).filter(
       c => c.parentId === post.id && !c.deleted && !c.parentDeleted
@@ -74,24 +53,7 @@ class PostDetail extends Component {
                 ))}
               </ol>
             </div>
-            <form className="post-comment-form">
-              <h4>Add new comment</h4>
-              <div className="group">
-                <textarea placeholder="Write comment ..." />
-              </div>
-              <div className="group">
-                <label htmlFor="author">Author</label>
-                <input
-                  type="text"
-                  name="author"
-                  id="author"
-                  placeholder="Type your username"
-                />
-              </div>
-              <div className="group">
-                <button className="btn">Add comment</button>
-              </div>
-            </form>
+            <CommentForm parentId={post.id} />
           </div>
           <AdminButtons name="post" />
         </div>
