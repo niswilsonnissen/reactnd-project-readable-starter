@@ -6,18 +6,22 @@ import Voting from "./Voting";
 import AdminButtons from "./AdminButtons";
 import CommentForm from "./CommentForm";
 
-import { votePostUp, votePostDown } from "../actions";
+import {
+  votePostUp,
+  votePostDown,
+  deletePost,
+  deleteComment
+} from "../actions";
 
 class PostDetail extends Component {
+  handleDeletePost = post => {
+    const { history, deletePost } = this.props;
+    deletePost(post);
+    history.push("/");
+  };
   render() {
-    const { posts, comments, votePostUp, votePostDown } = this.props;
-
-    const post = posts[this.props.page];
-
-    const postComments = Object.values(comments).filter(
-      c => c.parentId === post.id && !c.deleted && !c.parentDeleted
-    );
-
+    const { post, votePostUp, votePostDown, deleteComment } = this.props;
+    const { comments } = post;
     return (
       <div className="post-detail">
         <div className="post">
@@ -30,16 +34,16 @@ class PostDetail extends Component {
           <div className="content">
             <h3>{post.title}</h3>
             <div className="post-info">
-              by {post.author}, comments: {postComments.length}
+              by {post.author}, comments: {comments.length}
             </div>
             <div className="post-body">{post.body}</div>
             <div className="post-comments">
               <h4>
-                {postComments.length}{" "}
-                {postComments.length === 1 ? "comment" : "comments"}
+                {comments.length}{" "}
+                {comments.length === 1 ? "comment" : "comments"}
               </h4>
               <ol>
-                {postComments.map(comment => (
+                {comments.map(comment => (
                   <li key={comment.id}>
                     <div className="comment">
                       <Voting id={comment.id} voteScore={comment.voteScore} />
@@ -47,7 +51,11 @@ class PostDetail extends Component {
                         <div className="comment-body">{comment.body}</div>
                         <div className="comment-info">by {comment.author}</div>
                       </div>
-                      <AdminButtons name="comment" />
+                      <AdminButtons
+                        name="comment"
+                        id={comment.id}
+                        onDeleteClick={deleteComment}
+                      />
                     </div>
                   </li>
                 ))}
@@ -55,21 +63,38 @@ class PostDetail extends Component {
             </div>
             <CommentForm parentId={post.id} />
           </div>
-          <AdminButtons name="post" />
+          <AdminButtons
+            name="post"
+            id={post.id}
+            onDeleteClick={this.handleDeletePost}
+          />
         </div>
       </div>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return state;
+function mapStateToProps(state, ownProps) {
+  const post = state.posts[ownProps.page];
+  return {
+    post: {
+      ...post,
+      comments: Object.values(state.comments).filter(
+        comment => comment.parentId === post.id && !comment.deleted
+      ),
+      category: state.categories.find(
+        category => category.name === post.category
+      )
+    }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     votePostUp: data => dispatch(votePostUp(data)),
-    votePostDown: data => dispatch(votePostDown(data))
+    votePostDown: data => dispatch(votePostDown(data)),
+    deletePost: data => dispatch(deletePost(data)),
+    deleteComment: data => dispatch(deleteComment(data))
   };
 }
 

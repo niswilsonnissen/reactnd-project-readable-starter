@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { votePostUp, votePostDown } from "../actions";
+import { votePostUp, votePostDown, deletePost } from "../actions";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
 
@@ -10,21 +10,17 @@ import CategoryList from "./CategoryList";
 
 class MainView extends Component {
   render() {
-    const { posts, categories, comments } = this.props;
-    const { votePostUp, votePostDown } = this.props;
+    const { posts, categories } = this.props;
+    const { votePostUp, votePostDown, deletePost } = this.props;
 
     return (
       <div className="container">
         <div className="posts">
           <FilterBar />
-          {Object.keys(posts).map(key => {
-            const post = posts[key];
-            const category = categories.find(cat => cat.name === post.category);
-            const postComments = Object.values(comments).filter(
-              com => com.parentId === post.id
-            );
+          {posts.map(post => {
+            const { category, comments } = post;
             return (
-              <div key={key} className="post">
+              <div key={post.id} className="post">
                 <Voting
                   id={post.id}
                   voteScore={post.voteScore}
@@ -33,16 +29,29 @@ class MainView extends Component {
                 />
                 <div className="content">
                   <h3>
-                    <Link to={`/${category.path}/${key}`}>{post.title}</Link>
+                    <Link to={`/${category.path}/${post.id}`}>
+                      {post.title}
+                    </Link>
                   </h3>
                   <div className="post-info">
-                    posted by: {post.author}, comments: {postComments.length}
+                    posted by: {post.author}, comments: {comments.length}
                   </div>
                 </div>
-                <AdminButtons name="post" />
+                <AdminButtons
+                  name="post"
+                  id={post.id}
+                  onDeleteClick={deletePost}
+                />
               </div>
             );
           })}
+          {posts.length === 0 && (
+            <div style={{ textAlign: "center", padding: "16px" }}>
+              <em style={{ color: "#777" }}>
+                <strong>There are no posts</strong>
+              </em>
+            </div>
+          )}
         </div>
         <CategoryList categories={categories} showFrontpage={false} />
       </div>
@@ -51,13 +60,27 @@ class MainView extends Component {
 }
 
 function mapStateToProps(state) {
-  return state;
+  return {
+    posts: Object.values(state.posts)
+      .filter(post => !post.deleted)
+      .map(post => ({
+        ...post,
+        comments: Object.values(state.comments).filter(
+          comment => comment.parentId === post.id && !comment.deleted
+        ),
+        category: state.categories.find(
+          category => category.name === post.category
+        )
+      })),
+    categories: state.categories
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     votePostUp: data => dispatch(votePostUp(data)),
-    votePostDown: data => dispatch(votePostDown(data))
+    votePostDown: data => dispatch(votePostDown(data)),
+    deletePost: data => dispatch(deletePost(data))
   };
 }
 

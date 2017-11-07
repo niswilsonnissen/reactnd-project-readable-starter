@@ -5,7 +5,8 @@ import {
   DELETE_POST,
   VOTE_POST_UP,
   VOTE_POST_DOWN,
-  ADD_COMMENT
+  ADD_COMMENT,
+  DELETE_COMMENT
 } from "../actions";
 
 const initialCategoriesState = [
@@ -69,9 +70,14 @@ function posts(state = initialPostsState, action) {
         }
       };
     case DELETE_POST:
-      let newState = { ...state };
-      delete newState[post.id];
-      return newState;
+      const deletedPost = {
+        ...state[post.id],
+        deleted: true
+      };
+      return {
+        ...state,
+        [post.id]: deletedPost
+      };
     case VOTE_POST_UP:
       return {
         ...state,
@@ -125,6 +131,15 @@ function comments(state = initialCommentsState, action) {
         [comment.id]: {
           ...comment
         }
+      };
+    case DELETE_COMMENT:
+      const deletedComment = {
+        ...state[comment.id],
+        deleted: true
+      };
+      return {
+        ...state,
+        [comment.id]: deletedComment
       };
     default:
       return state;

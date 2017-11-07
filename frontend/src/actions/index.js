@@ -45,8 +45,7 @@ export function deletePost({ id }) {
   return {
     type: DELETE_POST,
     post: {
-      id,
-      deleted: true
+      id
     }
   };
 }
@@ -81,6 +80,15 @@ export function addComment({ id, parentId, body, author }) {
       voteScore: 0,
       deleted: false,
       parentDeleted: false
+    }
+  };
+}
+
+export function deleteComment({ id }) {
+  return {
+    type: DELETE_COMMENT,
+    comment: {
+      id
     }
   };
 }
