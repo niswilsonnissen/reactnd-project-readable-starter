@@ -1,5 +1,8 @@
 import { combineReducers } from "redux";
 import {
+  POSTS_LOADING,
+  POSTS_ERROR,
+  POSTS_LOADED,
   ADD_POST,
   UPDATE_POST,
   DELETE_POST,
@@ -54,9 +57,15 @@ const initialPostsState = {
 };
 
 function posts(state = initialPostsState, action) {
-  const { post } = action;
+  const { posts, post } = action;
 
   switch (action.type) {
+    case POSTS_LOADING:
+      return state;
+    case POSTS_LOADED:
+      return {
+        ...posts
+      };
     case ADD_POST:
       return {
         ...state,

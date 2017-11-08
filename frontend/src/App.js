@@ -2,12 +2,17 @@ import React, { Component } from "react";
 import { withRouter, Switch, Route, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import "./App.css";
+import { fetchPosts } from "./actions";
 import MainView from "./components/MainView";
 import PostDetail from "./components/PostDetail";
 import CategoryView from "./components/CategoryView";
 import PostForm from "./components/PostForm";
 
 class App extends Component {
+  componentDidMount() {
+    this.props.fetchPosts();
+  }
+
   render() {
     return (
       <div className="app">
@@ -60,4 +65,14 @@ class App extends Component {
   }
 }
 
-export default withRouter(connect()(App));
+function mapStateToProps(state) {
+  return state;
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchPosts: data => dispatch(fetchPosts(data))
+  };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
