@@ -92,3 +92,21 @@ export function deleteComment({ id }) {
     }
   };
 }
+
+export function voteCommentUp({ id }) {
+  return {
+    type: VOTE_COMMENT_UP,
+    comment: {
+      id
+    }
+  };
+}
+
+export function voteCommentDown({ id }) {
+  return {
+    type: VOTE_COMMENT_DOWN,
+    comment: {
+      id
+    }
+  };
+}

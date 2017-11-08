@@ -10,7 +10,9 @@ import {
   votePostUp,
   votePostDown,
   deletePost,
-  deleteComment
+  deleteComment,
+  voteCommentUp,
+  voteCommentDown
 } from "../actions";
 
 class PostDetail extends Component {
@@ -20,7 +22,14 @@ class PostDetail extends Component {
     history.push("/");
   };
   render() {
-    const { post, votePostUp, votePostDown, deleteComment } = this.props;
+    const {
+      post,
+      votePostUp,
+      votePostDown,
+      deleteComment,
+      voteCommentUp,
+      voteCommentDown
+    } = this.props;
     const { comments } = post;
     return (
       <div className="post-detail">
@@ -46,7 +55,12 @@ class PostDetail extends Component {
                 {comments.map(comment => (
                   <li key={comment.id}>
                     <div className="comment">
-                      <Voting id={comment.id} voteScore={comment.voteScore} />
+                      <Voting
+                        id={comment.id}
+                        voteScore={comment.voteScore}
+                        voteUp={voteCommentUp}
+                        voteDown={voteCommentDown}
+                      />
                       <div className="content">
                         <div className="comment-body">{comment.body}</div>
                         <div className="comment-info">by {comment.author}</div>
@@ -94,7 +108,9 @@ function mapDispatchToProps(dispatch) {
     votePostUp: data => dispatch(votePostUp(data)),
     votePostDown: data => dispatch(votePostDown(data)),
     deletePost: data => dispatch(deletePost(data)),
-    deleteComment: data => dispatch(deleteComment(data))
+    deleteComment: data => dispatch(deleteComment(data)),
+    voteCommentUp: data => dispatch(voteCommentUp(data)),
+    voteCommentDown: data => dispatch(voteCommentDown(data))
   };
 }
 

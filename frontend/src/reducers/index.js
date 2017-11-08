@@ -6,7 +6,9 @@ import {
   VOTE_POST_UP,
   VOTE_POST_DOWN,
   ADD_COMMENT,
-  DELETE_COMMENT
+  DELETE_COMMENT,
+  VOTE_COMMENT_UP,
+  VOTE_COMMENT_DOWN
 } from "../actions";
 
 const initialCategoriesState = [
@@ -140,6 +142,22 @@ function comments(state = initialCommentsState, action) {
       return {
         ...state,
         [comment.id]: deletedComment
+      };
+    case VOTE_COMMENT_UP:
+      return {
+        ...state,
+        [comment.id]: {
+          ...state[comment.id],
+          voteScore: state[comment.id].voteScore + 1
+        }
+      };
+    case VOTE_COMMENT_DOWN:
+      return {
+        ...state,
+        [comment.id]: {
+          ...state[comment.id],
+          voteScore: state[comment.id].voteScore - 1
+        }
       };
     default:
       return state;
