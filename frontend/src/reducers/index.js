@@ -1,8 +1,10 @@
 import { combineReducers } from "redux";
 import {
-  POSTS_LOADING,
-  POSTS_ERROR,
+  DATA_LOADING,
+  /*  DATA_SAVING, */
+  DATA_ERROR,
   POSTS_LOADED,
+  /* COMMENTS_LOADED, */
   ADD_POST,
   UPDATE_POST,
   DELETE_POST,
@@ -11,7 +13,9 @@ import {
   ADD_COMMENT,
   DELETE_COMMENT,
   VOTE_COMMENT_UP,
-  VOTE_COMMENT_DOWN
+  VOTE_COMMENT_DOWN,
+  CATEGORIES_LOADED,
+  POST_LOADED
 } from "../actions";
 
 const initialCategoriesState = [
@@ -30,10 +34,18 @@ const initialCategoriesState = [
 ];
 
 function categories(state = initialCategoriesState, action) {
-  return state;
+  switch (action.type) {
+    case CATEGORIES_LOADED:
+      const { categories } = action;
+      return categories;
+    default:
+      return state;
+  }
 }
 
-const initialPostsState = {
+const initialPostsState = {};
+
+/*
   "8xf0y6ziyjabvozdd253nd": {
     id: "8xf0y6ziyjabvozdd253nd",
     timestamp: 1467166872634,
@@ -55,13 +67,18 @@ const initialPostsState = {
     deleted: false
   }
 };
+*/
 
 function posts(state = initialPostsState, action) {
   const { posts, post } = action;
-
   switch (action.type) {
-    case POSTS_LOADING:
-      return state;
+    case POST_LOADED:
+      return {
+        ...state,
+        [post.id]: {
+          ...post
+        }
+      };
     case POSTS_LOADED:
       return {
         ...posts
@@ -173,7 +190,30 @@ function comments(state = initialCommentsState, action) {
   }
 }
 
+const initialDataState = {
+  isLoading: false
+};
+
+function data(state = initialDataState, action) {
+  switch (action.type) {
+    case DATA_LOADING:
+      return {
+        ...state,
+        isLoading: action.isLoading
+      };
+    case DATA_ERROR:
+      return {
+        ...state,
+        errorOccurred: true,
+        errorMessage: action.message
+      };
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
+  data,
   categories,
   posts,
   comments

@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-
+import { fetchPost } from "../actions";
 import Voting from "./Voting";
 import AdminButtons from "./AdminButtons";
 import CommentForm from "./CommentForm";
+import { formatDate } from "../utils/helpers";
 
 import {
   votePostUp,
@@ -21,8 +22,14 @@ class PostDetail extends Component {
     deletePost(post);
     history.push("/");
   };
+
+  componentDidMount() {
+    this.props.fetchPost(this.props.page);
+  }
+
   render() {
     const {
+      isLoading,
       post,
       votePostUp,
       votePostDown,
@@ -30,6 +37,11 @@ class PostDetail extends Component {
       voteCommentUp,
       voteCommentDown
     } = this.props;
+
+    if (isLoading || !post) {
+      return <p>Loading post ...</p>;
+    }
+
     const { comments } = post;
     return (
       <div className="post-detail">
@@ -43,7 +55,8 @@ class PostDetail extends Component {
           <div className="content">
             <h3>{post.title}</h3>
             <div className="post-info">
-              by {post.author}, comments: {comments.length}
+              by {post.author}
+              {formatDate(post.timestamp)}, comments: {comments.length}
             </div>
             <div className="post-body">{post.body}</div>
             <div className="post-comments">
@@ -89,22 +102,35 @@ class PostDetail extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  const post = state.posts[ownProps.page];
+  const postId = ownProps.page;
+  const post =
+    typeof state.posts[postId] !== "undefined" ? state.posts[postId] : null;
+
+  if (post) {
+    const comments = Object.values(state.comments).filter(
+      comment => comment.parentId === postId && !comment.deleted
+    );
+    const category = state.categories.find(
+      category => category.name === post.category
+    );
+    return {
+      isLoading: state.data.isLoading,
+      post: {
+        ...post,
+        comments,
+        category
+      }
+    };
+  }
   return {
-    post: {
-      ...post,
-      comments: Object.values(state.comments).filter(
-        comment => comment.parentId === post.id && !comment.deleted
-      ),
-      category: state.categories.find(
-        category => category.name === post.category
-      )
-    }
+    isLoading: state.data.isLoading,
+    post: null
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    fetchPost: data => dispatch(fetchPost(data)),
     votePostUp: data => dispatch(votePostUp(data)),
     votePostDown: data => dispatch(votePostDown(data)),
     deletePost: data => dispatch(deletePost(data)),

@@ -1,7 +1,13 @@
 import React, { Component } from "react";
-import { votePostUp, votePostDown, deletePost } from "../actions";
+import {
+  votePostUp,
+  votePostDown,
+  deletePost,
+  fetchCategories
+} from "../actions";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
+import { formatDate } from "../utils/helpers";
 
 import Voting from "./Voting";
 import AdminButtons from "./AdminButtons";
@@ -9,6 +15,10 @@ import FilterBar from "./FilterBar";
 import CategoryList from "./CategoryList";
 
 class MainView extends Component {
+  componentDidMount() {
+    this.props.fetchCategories();
+  }
+
   render() {
     const { posts, categories } = this.props;
     const { votePostUp, votePostDown, deletePost } = this.props;
@@ -34,7 +44,8 @@ class MainView extends Component {
                     </Link>
                   </h3>
                   <div className="post-info">
-                    posted by: {post.author}, comments: {comments.length}
+                    posted by: {post.author}
+                    {formatDate(post.timestamp)}, comments: {comments.length}
                   </div>
                 </div>
                 <AdminButtons
@@ -78,6 +89,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    fetchCategories: data => dispatch(fetchCategories(data)),
     votePostUp: data => dispatch(votePostUp(data)),
     votePostDown: data => dispatch(votePostDown(data)),
     deletePost: data => dispatch(deletePost(data))

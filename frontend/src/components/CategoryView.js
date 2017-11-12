@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
 
 import { votePostUp, votePostDown, deletePost } from "../actions";
-import { capitalize } from "../utils/helpers";
+import { capitalize, formatDate } from "../utils/helpers";
 
 import Voting from "./Voting";
 import AdminButtons from "./AdminButtons";
@@ -42,7 +42,9 @@ class CategoryView extends Component {
                     </Link>
                   </h3>
                   <div className="post-info">
-                    posted by: {post.author}, comments: {post.comments.length}
+                    posted by: {post.author}
+                    {formatDate(post.timestamp)}, comments:{" "}
+                    {post.comments.length}
                   </div>
                 </div>
                 <AdminButtons
