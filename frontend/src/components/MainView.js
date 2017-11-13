@@ -1,12 +1,17 @@
 import React, { Component } from "react";
+import series from "async/series";
+import { connect } from "react-redux";
+import { withRouter, Link } from "react-router-dom";
+
 import {
   votePostUp,
   votePostDown,
   deletePost,
-  fetchCategories
+  fetchCategories,
+  fetchPosts,
+  fetchComments
 } from "../actions";
-import { connect } from "react-redux";
-import { withRouter, Link } from "react-router-dom";
+
 import { formatDate } from "../utils/helpers";
 
 import Voting from "./Voting";
@@ -16,7 +21,18 @@ import CategoryList from "./CategoryList";
 
 class MainView extends Component {
   componentDidMount() {
-    this.props.fetchCategories();
+    const { fetchCategories, fetchPosts, fetchComments } = this.props;
+    fetchCategories().then(() => {
+      fetchPosts().then(() => {
+        series(
+          this.props.posts.map(post => {
+            return done => {
+              fetchComments(post).then(() => done());
+            };
+          })
+        );
+      });
+    });
   }
 
   render() {
@@ -90,6 +106,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     fetchCategories: data => dispatch(fetchCategories(data)),
+    fetchPosts: data => dispatch(fetchPosts(data)),
+    fetchComments: data => dispatch(fetchComments(data)),
     votePostUp: data => dispatch(votePostUp(data)),
     votePostDown: data => dispatch(votePostDown(data)),
     deletePost: data => dispatch(deletePost(data))

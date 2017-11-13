@@ -14,3 +14,10 @@ export function formatDate(timestamp) {
   }
   return "";
 }
+
+export function indexedById(collection) {
+  return collection.reduce(
+    (obj, val) => ({ ...obj, [val.id]: { ...val } }),
+    {}
+  );
+}

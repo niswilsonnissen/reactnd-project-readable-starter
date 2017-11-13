@@ -13,6 +13,7 @@ export const DELETE_POST = "DELETE_POST";
 export const VOTE_POST_UP = "VOTE_POST_UP";
 export const VOTE_POST_DOWN = "VOTE_POST_DOWN";
 
+export const COMMENT_LOADED = "COMMENT_LOADED";
 export const COMMENTS_LOADED = "COMMENTS_LOADED";
 export const COMMENT_SAVED = "COMMENT_SAVED";
 
@@ -25,17 +26,17 @@ export const VOTE_COMMENT_DOWN = "VOTE_COMMENT_DOWN";
 
 export const CATEGORIES_LOADED = "CATEGORIES_LOADED";
 
-function indexedById(collection) {
-  return collection.reduce(
-    (obj, val) => ({ ...obj, [val.id]: { ...val } }),
-    {}
-  );
-}
-
 export function dataLoading(isLoading) {
   return {
     type: DATA_LOADING,
     isLoading
+  };
+}
+
+export function dataSaving(isSaving) {
+  return {
+    type: DATA_SAVING,
+    isSaving
   };
 }
 
@@ -48,25 +49,23 @@ export function dataError(message) {
 }
 
 export function postsLoaded(posts) {
-  posts.forEach(post => fetchComments(post));
   return {
     type: POSTS_LOADED,
-    posts: indexedById(posts)
+    posts
   };
 }
 
 export function postLoaded(post) {
   return {
     type: POST_LOADED,
-    post: post
+    post
   };
 }
 
 export function fetchPost(page) {
   return dispatch => {
     dispatch(dataLoading(true));
-
-    fetch(`http://localhost:3001/posts/${page}`, {
+    return fetch(`http://localhost:3001/posts/${page}`, {
       method: "GET",
       headers: {
         Authorization: `Basic ${btoa("user:pass")}`
@@ -80,10 +79,7 @@ export function fetchPost(page) {
         return response;
       })
       .then(response => response.json())
-      .then(post => {
-        dispatch(postLoaded(post));
-        dispatch(fetchComments(post));
-      })
+      .then(post => dispatch(postLoaded(post)))
       .catch(reason => dispatch(dataError(reason)));
   };
 }
@@ -91,8 +87,7 @@ export function fetchPost(page) {
 export function fetchPosts() {
   return dispatch => {
     dispatch(dataLoading(true));
-
-    fetch("http://localhost:3001/posts", {
+    return fetch("http://localhost:3001/posts", {
       method: "GET",
       headers: {
         Authorization: `Basic ${btoa("user:pass")}`
@@ -149,28 +144,43 @@ export function deletePost({ id }) {
   };
 }
 
-export function votePostUp({ id }) {
-  return {
-    type: VOTE_POST_UP,
-    post: {
-      id
-    }
-  };
-}
+// ==== Voting on posts ====
+export const votePostUp = voteOnPost("upVote");
+export const votePostDown = voteOnPost("downVote");
 
-export function votePostDown({ id }) {
-  return {
-    type: VOTE_POST_DOWN,
-    post: {
-      id
-    }
+function voteOnPost(type) {
+  return ({ id }) => {
+    return dispatch => {
+      dispatch(dataSaving(true));
+      fetch(`http://localhost:3001/posts/${id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${btoa("user:pass")}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          option: type
+        })
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          dispatch(dataSaving(false));
+          return response;
+        })
+        .then(response => response.json())
+        .then(post => dispatch(postLoaded(post)))
+        .catch(reason => dispatch(dataError(reason)));
+    };
   };
 }
+// ==========================
 
 export function fetchComments(post) {
   return dispatch => {
     dispatch(dataLoading(true));
-    fetch(`http://localhost:3001/posts/${post.id}/comments`, {
+    return fetch(`http://localhost:3001/posts/${post.id}/comments`, {
       method: "GET",
       headers: {
         Authorization: `Basic ${btoa("user:pass")}`
@@ -198,7 +208,7 @@ export function addComment({ id, parentId, body, author }) {
       timestamp: Date.now(),
       body,
       author,
-      voteScore: 0,
+      voteScore: 1,
       deleted: false,
       parentDeleted: false
     }
@@ -214,30 +224,52 @@ export function deleteComment({ id }) {
   };
 }
 
-export function voteCommentUp({ id }) {
+export function commentLoaded(comment) {
   return {
-    type: VOTE_COMMENT_UP,
-    comment: {
-      id
-    }
-  };
-}
-
-export function voteCommentDown({ id }) {
-  return {
-    type: VOTE_COMMENT_DOWN,
-    comment: {
-      id
-    }
+    type: COMMENT_LOADED,
+    comment
   };
 }
 
 export function commentsLoaded(comments) {
   return {
     type: COMMENTS_LOADED,
-    comments: indexedById(comments)
+    comments
   };
 }
+
+/* ==== Voting on comments ==== */
+export const voteCommentUp = voteOnComment("upVote");
+export const voteCommentDown = voteOnComment("downVote");
+
+function voteOnComment(type) {
+  return ({ id }) => {
+    return dispatch => {
+      dispatch(dataSaving(true));
+      return fetch(`http://localhost:3001/comments/${id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${btoa("user:pass")}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          option: type
+        })
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          dispatch(dataSaving(false));
+          return response;
+        })
+        .then(response => response.json())
+        .then(comment => dispatch(commentLoaded(comment)))
+        .catch(reason => dispatch(dataError(reason)));
+    };
+  };
+}
+/* ============================ */
 
 export function categoriesLoaded(categories) {
   return {
@@ -249,7 +281,7 @@ export function categoriesLoaded(categories) {
 export function fetchCategories() {
   return dispatch => {
     dispatch(dataLoading(true));
-    fetch("http://localhost:3001/categories", {
+    return fetch("http://localhost:3001/categories", {
       method: "GET",
       headers: {
         Authorization: `Basic ${btoa("user:pass")}`
@@ -264,10 +296,7 @@ export function fetchCategories() {
         return response;
       })
       .then(response => response.json())
-      .then(categories => {
-        dispatch(categoriesLoaded(categories.categories));
-        dispatch(fetchPosts());
-      })
+      .then(categories => dispatch(categoriesLoaded(categories.categories)))
       .catch(reason => dispatch(dataError(reason)));
   };
 }
