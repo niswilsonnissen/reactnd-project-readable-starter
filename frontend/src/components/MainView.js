@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import series from "async/series";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
+import queryString from "query-string";
 
 import {
   votePostUp,
@@ -13,6 +14,7 @@ import {
 } from "../actions";
 
 import { formatDate } from "../utils/helpers";
+import { descending } from "../utils/orderBy";
 
 import Voting from "./Voting";
 import AdminButtons from "./AdminButtons";
@@ -20,6 +22,11 @@ import FilterBar from "./FilterBar";
 import CategoryList from "./CategoryList";
 
 class MainView extends Component {
+  orderByOptions = {
+    timestamp: descending("timestamp"),
+    voteScore: descending("voteScore")
+  };
+
   componentDidMount() {
     const { fetchCategories, fetchPosts, fetchComments } = this.props;
     fetchCategories().then(() => {
@@ -36,14 +43,21 @@ class MainView extends Component {
   }
 
   render() {
-    const { posts, categories } = this.props;
-    const { votePostUp, votePostDown, deletePost } = this.props;
-
+    const {
+      categories,
+      posts,
+      votePostUp,
+      votePostDown,
+      deletePost,
+      location
+    } = this.props;
+    const { orderBy } = queryString.parse(location.search);
+    let sortedPosts = [...posts].sort(this.orderByOptions[orderBy]);
     return (
       <div className="container">
         <div className="posts">
-          <FilterBar />
-          {posts.map(post => {
+          <FilterBar orderBy={orderBy} />
+          {sortedPosts.map(post => {
             const { category, comments } = post;
             return (
               <div key={post.id} className="post">

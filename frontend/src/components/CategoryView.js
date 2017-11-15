@@ -1,9 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
+import series from "async/series";
+import queryString from "query-string";
 
-import { votePostUp, votePostDown, deletePost } from "../actions";
+import {
+  votePostUp,
+  votePostDown,
+  deletePost,
+  fetchCategories,
+  fetchPosts,
+  fetchComments
+} from "../actions";
 import { capitalize, formatDate } from "../utils/helpers";
+import { descending } from "../utils/orderBy";
 
 import Voting from "./Voting";
 import AdminButtons from "./AdminButtons";
@@ -11,6 +21,26 @@ import FilterBar from "./FilterBar";
 import CategoryList from "./CategoryList";
 
 class CategoryView extends Component {
+  orderByOptions = {
+    timestamp: descending("timestamp"),
+    voteScore: descending("voteScore")
+  };
+
+  componentDidMount() {
+    const { fetchCategories, fetchPosts, fetchComments } = this.props;
+    fetchCategories().then(() => {
+      fetchPosts().then(() => {
+        series(
+          this.props.posts.map(post => {
+            return done => {
+              fetchComments(post).then(() => done());
+            };
+          })
+        );
+      });
+    });
+  }
+
   render() {
     const {
       categories,
@@ -18,15 +48,26 @@ class CategoryView extends Component {
       category,
       votePostUp,
       votePostDown,
-      deletePost
+      deletePost,
+      location
     } = this.props;
+    const { orderBy } = queryString.parse(location.search);
+    let sortedPosts = [...posts].sort(this.orderByOptions[orderBy]);
+
+    if (!category) {
+      return (
+        <div className="container">
+          <em>Loading ...</em>
+        </div>
+      );
+    }
 
     return (
       <div className="container">
         <div className="posts">
           <h2>Category: {capitalize(category.name)}</h2>
-          <FilterBar />
-          {posts.map(post => {
+          <FilterBar orderBy={orderBy} />
+          {sortedPosts.map(post => {
             return (
               <div key={post.id} className="post">
                 <Voting
@@ -88,6 +129,9 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    fetchCategories: data => dispatch(fetchCategories(data)),
+    fetchPosts: data => dispatch(fetchPosts(data)),
+    fetchComments: data => dispatch(fetchComments(data)),
     votePostUp: data => dispatch(votePostUp(data)),
     votePostDown: data => dispatch(votePostDown(data)),
     deletePost: data => dispatch(deletePost(data))

@@ -5,6 +5,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "dateformat": "^3.0.2",
+    "query-string": "^5.0.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
