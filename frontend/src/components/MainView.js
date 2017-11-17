@@ -52,7 +52,9 @@ class MainView extends Component {
       location
     } = this.props;
     const { orderBy } = queryString.parse(location.search);
-    let sortedPosts = [...posts].sort(this.orderByOptions[orderBy]);
+    let sortedPosts = [...posts].sort(
+      this.orderByOptions[orderBy || "voteScore"]
+    );
     return (
       <div className="container">
         <div className="posts">

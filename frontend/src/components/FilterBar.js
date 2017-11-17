@@ -13,12 +13,12 @@ class FilterBar extends Component {
   render() {
     const sortOptions = [
       {
-        value: "timestamp",
-        text: "Date"
-      },
-      {
         value: "voteScore",
         text: "Votes"
+      },
+      {
+        value: "timestamp",
+        text: "Date"
       }
     ];
 

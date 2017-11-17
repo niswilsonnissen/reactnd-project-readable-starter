@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
-import * as uuid from "uuid";
+import uuidv1 from "uuid/v1";
 import { addPost } from "../actions";
 import { capitalize } from "../utils/helpers";
 
@@ -15,20 +15,24 @@ class PostForm extends Component {
 
   handleAddPost = e => {
     e.preventDefault();
-    const { history, categories } = this.props;
+    const { history, categories, addPost } = this.props;
     const newPost = {
       ...this.state,
-      id: uuid.v1()
+      id: uuidv1(),
+      timestamp: Date.now(),
+      voteScore: 1,
+      deleted: false
     };
-    const category = categories.find(c => c.name === newPost.category);
-    this.props.addPost(newPost);
-    this.setState({
-      category: "react",
-      title: "",
-      body: "",
-      author: ""
+    addPost(newPost).then(() => {
+      const category = categories.find(c => c.name === newPost.category);
+      this.setState({
+        category: "react",
+        title: "",
+        body: "",
+        author: ""
+      });
+      history.push(`/${category.path}/${newPost.id}`);
     });
-    history.push(`/${category.path}/${newPost.id}`);
   };
 
   render() {

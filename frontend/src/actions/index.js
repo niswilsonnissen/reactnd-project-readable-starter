@@ -106,19 +106,28 @@ export function fetchPosts() {
   };
 }
 
-export function addPost({ id, category, author, title, body }) {
-  return {
-    type: ADD_POST,
-    post: {
-      id,
-      category,
-      author,
-      title,
-      body,
-      timestamp: Date.now(),
-      voteScore: 1,
-      deleted: false
-    }
+export function addPost(post) {
+  return dispatch => {
+    dispatch(dataSaving(true));
+    return fetch("http://localhost:3001/posts", {
+      method: "post",
+      headers: {
+        Authorization: `Basic ${btoa("user:pass")}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        ...post
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then(post => dispatch(postLoaded(post)))
+      .catch(reason => dispatch(dataError(reason)));
   };
 }
 
