@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { addComment } from "../actions";
-import * as uuid from "uuid";
+import uuidv1 from "uuid/v1";
 
 class CommentForm extends Component {
   state = {
@@ -12,15 +12,16 @@ class CommentForm extends Component {
 
   handleAddComment = e => {
     e.preventDefault();
-    const { parentId } = this.props;
+    const { parentId, addComment } = this.props;
     const { body, author } = this.state;
     const newComment = {
-      id: uuid.v1(),
+      id: uuidv1(),
+      timestamp: Date.now(),
       parentId,
       body,
       author
     };
-    this.props.addComment(newComment);
+    addComment(newComment);
     this.setState({
       body: "",
       author: ""

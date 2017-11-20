@@ -208,19 +208,27 @@ export function fetchComments(post) {
   };
 }
 
-export function addComment({ id, parentId, body, author }) {
-  return {
-    type: ADD_COMMENT,
-    comment: {
-      id,
-      parentId,
-      timestamp: Date.now(),
-      body,
-      author,
-      voteScore: 1,
-      deleted: false,
-      parentDeleted: false
-    }
+export function addComment(comment) {
+  return dispatch => {
+    dispatch(dataSaving(true));
+    return fetch("http://localhost:3001/comments", {
+      method: "post",
+      headers: {
+        Authorization: `Basic ${btoa("user:pass")}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(comment)
+    })
+      .then(response => {
+        dataSaving(false);
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
+      .then(comment => dispatch(commentLoaded(comment)))
+      .catch(reason => dispatch(dataError(reason)));
   };
 }
 

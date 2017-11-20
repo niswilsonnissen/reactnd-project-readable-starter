@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { fetchPost } from "../actions";
+import { fetchCategories, fetchPost, fetchComments } from "../actions";
 import Voting from "./Voting";
 import AdminButtons from "./AdminButtons";
 import CommentForm from "./CommentForm";
 import { formatDate } from "../utils/helpers";
+import { descending } from "../utils/orderBy";
 
 import {
   votePostUp,
@@ -24,7 +25,12 @@ class PostDetail extends Component {
   };
 
   componentDidMount() {
-    this.props.fetchPost(this.props.page);
+    const { fetchCategories, fetchPost, fetchComments, page } = this.props;
+    fetchCategories().then(() => {
+      fetchPost(page).then(() => {
+        fetchComments(this.props.post);
+      });
+    });
   }
 
   render() {
@@ -43,6 +49,7 @@ class PostDetail extends Component {
     }
 
     const { comments } = post;
+    const sortedComments = comments.sort(descending("voteScore"));
     return (
       <div className="post-detail">
         <div className="post">
@@ -55,6 +62,10 @@ class PostDetail extends Component {
           <div className="content">
             <h3>{post.title}</h3>
             <div className="post-info">
+              in{" "}
+              <Link to={`/${post.category.path}/`}>
+                {post.category.name}
+              </Link>{" "}
               by {post.author}
               {formatDate(post.timestamp)}, comments: {comments.length}
             </div>
@@ -130,7 +141,9 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    fetchCategories: data => dispatch(fetchCategories(data)),
     fetchPost: data => dispatch(fetchPost(data)),
+    fetchComments: data => dispatch(fetchComments(data)),
     votePostUp: data => dispatch(votePostUp(data)),
     votePostDown: data => dispatch(votePostDown(data)),
     deletePost: data => dispatch(deletePost(data)),
