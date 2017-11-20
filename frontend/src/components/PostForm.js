@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import uuidv1 from "uuid/v1";
-import { addPost } from "../actions";
+import { addPost, fetchCategories } from "../actions";
 import { capitalize } from "../utils/helpers";
 
 class PostForm extends Component {
@@ -34,6 +34,11 @@ class PostForm extends Component {
       history.push(`/${category.path}/${newPost.id}`);
     });
   };
+
+  componentDidMount() {
+    const { fetchCategories } = this.props;
+    fetchCategories();
+  }
 
   render() {
     const { categories } = this.props;
@@ -99,11 +104,14 @@ class PostForm extends Component {
 }
 
 function mapStateToProps(state) {
-  return state;
+  return {
+    categories: state.categories
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    fetchCategories: data => dispatch(fetchCategories(data)),
     addPost: data => dispatch(addPost(data))
   };
 }

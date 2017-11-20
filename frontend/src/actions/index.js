@@ -283,7 +283,7 @@ function voteOnComment(type) {
 export function categoriesLoaded(categories) {
   return {
     type: CATEGORIES_LOADED,
-    categories
+    categories: categories
   };
 }
 
@@ -300,7 +300,6 @@ export function fetchCategories() {
         if (!response.ok) {
           throw Error("Unable to load categories");
         }
-
         dispatch(dataLoading(false));
         return response;
       })

@@ -21,7 +21,7 @@ function categories(state = initialCategoriesState, action) {
   switch (action.type) {
     case CATEGORIES_LOADED:
       const { categories } = action;
-      return categories;
+      return [...categories];
     default:
       return state;
   }
