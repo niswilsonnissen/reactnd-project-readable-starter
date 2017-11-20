@@ -48,8 +48,8 @@ class PostDetail extends Component {
       return <p>Loading post ...</p>;
     }
 
-    const { comments } = post;
-    const sortedComments = comments.sort(descending("voteScore"));
+    let sortedComments = [...post.comments];
+    sortedComments.sort(descending("voteScore"));
     return (
       <div className="post-detail">
         <div className="post">
@@ -67,16 +67,16 @@ class PostDetail extends Component {
                 {post.category.name}
               </Link>{" "}
               by {post.author}
-              {formatDate(post.timestamp)}, comments: {comments.length}
+              {formatDate(post.timestamp)}, comments: {sortedComments.length}
             </div>
             <div className="post-body">{post.body}</div>
             <div className="post-comments">
               <h4>
-                {comments.length}{" "}
-                {comments.length === 1 ? "comment" : "comments"}
+                {sortedComments.length}{" "}
+                {sortedComments.length === 1 ? "comment" : "comments"}
               </h4>
               <ol>
-                {comments.map(comment => (
+                {sortedComments.map(comment => (
                   <li key={comment.id}>
                     <div className="comment">
                       <Voting
