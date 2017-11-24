@@ -1,8 +1,9 @@
 import { combineReducers } from "redux";
 import {
   DATA_LOADING,
+  DATA_LOAD_ERROR,
   DATA_SAVING,
-  DATA_ERROR,
+  DATA_SAVE_ERROR,
   POST_LOADED,
   POSTS_LOADED,
   COMMENT_LOADED,
@@ -117,10 +118,18 @@ function data(state = initialDataState, action) {
         ...state,
         isSaving: action.isSaving
       };
-    case DATA_ERROR:
+    case DATA_LOAD_ERROR:
       return {
         ...state,
-        errorOccurred: true,
+        isLoading: false,
+        errorOccurred: action.errorOccurred,
+        errorMessage: action.message
+      };
+    case DATA_SAVE_ERROR:
+      return {
+        ...state,
+        isSaving: false,
+        errorOccurred: action.errorOccurred,
         errorMessage: action.message
       };
     default:

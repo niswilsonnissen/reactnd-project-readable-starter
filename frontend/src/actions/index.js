@@ -1,10 +1,10 @@
 export const DATA_LOADING = "DATA_LOADING";
+export const DATA_LOAD_ERROR = "DATA_LOAD_ERROR";
 export const DATA_SAVING = "DATA_SAVING";
-export const DATA_ERROR = "DATA_ERROR";
+export const DATA_SAVE_ERROR = "DATA_SAVE_ERROR";
 
 export const POST_LOADED = "POST_LOADED";
 export const POSTS_LOADED = "POSTS_LOADED";
-export const POST_SAVED = "POST_SAVED";
 
 export const ADD_POST = "ADD_POST";
 export const UPDATE_POST = "UPDATE_POST";
@@ -31,6 +31,22 @@ export function dataLoading(isLoading) {
   };
 }
 
+export function dataLoadError(message) {
+  return {
+    type: DATA_LOAD_ERROR,
+    errorOccurred: true,
+    message
+  };
+}
+
+export function clearDataLoadError() {
+  return {
+    type: DATA_LOAD_ERROR,
+    errorOccurred: false,
+    message: null
+  };
+}
+
 export function dataSaving(isSaving) {
   return {
     type: DATA_SAVING,
@@ -38,11 +54,19 @@ export function dataSaving(isSaving) {
   };
 }
 
-export function dataError(message) {
+export function dataSaveError(message) {
   return {
-    type: DATA_ERROR,
+    type: DATA_SAVE_ERROR,
     errorOccurred: true,
     message
+  };
+}
+
+export function clearDataSaveError() {
+  return {
+    type: DATA_SAVE_ERROR,
+    errorOccurred: false,
+    message: null
   };
 }
 
@@ -78,7 +102,7 @@ export function fetchPost(page) {
       })
       .then(response => response.json())
       .then(post => dispatch(postLoaded(post)))
-      .catch(reason => dispatch(dataError(reason)));
+      .catch(reason => dispatch(dataLoadError(reason)));
   };
 }
 
@@ -100,7 +124,7 @@ export function fetchPosts() {
       })
       .then(response => response.json())
       .then(posts => dispatch(postsLoaded(posts)))
-      .catch(reason => dispatch(dataError(reason)));
+      .catch(reason => dispatch(dataLoadError(reason)));
   };
 }
 
@@ -121,11 +145,12 @@ export function addPost(post) {
         if (!response.ok) {
           throw Error(response.statusText);
         }
+        dataLoading(false);
         return response;
       })
       .then(response => response.json())
       .then(post => dispatch(postLoaded(post)))
-      .catch(reason => dispatch(dataError(reason)));
+      .catch(reason => dispatch(dataSaveError(reason)));
   };
 }
 
@@ -151,7 +176,7 @@ export function deletePost(post) {
         dispatch(postLoaded(post));
         return dispatch(fetchComments(post));
       })
-      .catch(reason => dispatch(dataError(reason)));
+      .catch(reason => dispatch(dataSaveError(reason)));
   };
 }
 
@@ -195,7 +220,7 @@ function voteOnPost(type) {
         })
         .then(response => response.json())
         .then(post => dispatch(postLoaded(post)))
-        .catch(reason => dispatch(dataError(reason)));
+        .catch(reason => dispatch(dataSaveError(reason)));
     };
   };
 }
@@ -219,7 +244,7 @@ export function fetchComments(post) {
       })
       .then(response => response.json())
       .then(comments => dispatch(commentsLoaded(comments)))
-      .catch(reason => dispatch(dataError(reason)));
+      .catch(reason => dispatch(dataLoadError(reason)));
   };
 }
 
@@ -243,7 +268,7 @@ export function addComment(comment) {
       })
       .then(response => response.json())
       .then(comment => dispatch(commentLoaded(comment)))
-      .catch(reason => dispatch(dataError(reason)));
+      .catch(reason => dispatch(dataSaveError(reason)));
   };
 }
 
@@ -266,7 +291,7 @@ export function deleteComment(comment) {
       })
       .then(response => response.json())
       .then(comment => dispatch(commentLoaded(comment)))
-      .catch(reason => dispatch(dataError(reason)));
+      .catch(reason => dispatch(dataSaveError(reason)));
   };
 }
 
@@ -311,7 +336,7 @@ function voteOnComment(type) {
         })
         .then(response => response.json())
         .then(comment => dispatch(commentLoaded(comment)))
-        .catch(reason => dispatch(dataError(reason)));
+        .catch(reason => dispatch(dataSaveError(reason)));
     };
   };
 }
@@ -342,6 +367,6 @@ export function fetchCategories() {
       })
       .then(response => response.json())
       .then(categories => dispatch(categoriesLoaded(categories.categories)))
-      .catch(reason => dispatch(dataError(reason)));
+      .catch(reason => dispatch(dataLoadError(reason)));
   };
 }
