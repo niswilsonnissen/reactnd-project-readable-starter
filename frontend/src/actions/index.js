@@ -8,7 +8,6 @@ export const POST_SAVED = "POST_SAVED";
 
 export const ADD_POST = "ADD_POST";
 export const UPDATE_POST = "UPDATE_POST";
-export const DELETE_POST = "DELETE_POST";
 
 export const VOTE_POST_UP = "VOTE_POST_UP";
 export const VOTE_POST_DOWN = "VOTE_POST_DOWN";
@@ -19,7 +18,6 @@ export const COMMENT_SAVED = "COMMENT_SAVED";
 
 export const ADD_COMMENT = "ADD_COMMENT";
 export const UPDATE_COMMENT = "UPDATE_COMMENT";
-export const DELETE_COMMENT = "DELETE_COMMENT";
 
 export const VOTE_COMMENT_UP = "VOTE_COMMENT_UP";
 export const VOTE_COMMENT_DOWN = "VOTE_COMMENT_DOWN";
@@ -131,6 +129,32 @@ export function addPost(post) {
   };
 }
 
+export function deletePost(post) {
+  return dispatch => {
+    dispatch(dataSaving(true));
+    return fetch(`http://localhost:3001/posts/${post.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Basic ${btoa("user:pass")}`,
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        dispatch(dataSaving(false));
+        return response;
+      })
+      .then(response => response.json())
+      .then(post => {
+        dispatch(postLoaded(post));
+        return dispatch(fetchComments(post));
+      })
+      .catch(reason => dispatch(dataError(reason)));
+  };
+}
+
 export function updatePost({ id, category, author, title, body }) {
   return {
     type: UPDATE_POST,
@@ -140,15 +164,6 @@ export function updatePost({ id, category, author, title, body }) {
       author,
       title,
       body
-    }
-  };
-}
-
-export function deletePost({ id }) {
-  return {
-    type: DELETE_POST,
-    post: {
-      id
     }
   };
 }
@@ -220,10 +235,10 @@ export function addComment(comment) {
       body: JSON.stringify(comment)
     })
       .then(response => {
-        dataSaving(false);
         if (!response.ok) {
           throw Error(response.statusText);
         }
+        dataSaving(false);
         return response;
       })
       .then(response => response.json())
@@ -232,12 +247,26 @@ export function addComment(comment) {
   };
 }
 
-export function deleteComment({ id }) {
-  return {
-    type: DELETE_COMMENT,
-    comment: {
-      id
-    }
+export function deleteComment(comment) {
+  return dispatch => {
+    dispatch(dataSaving(true));
+    return fetch(`http://localhost:3001/comments/${comment.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Basic ${btoa("user:pass")}`,
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        dispatch(dataSaving(false));
+        return response;
+      })
+      .then(response => response.json())
+      .then(comment => dispatch(commentLoaded(comment)))
+      .catch(reason => dispatch(dataError(reason)));
   };
 }
 

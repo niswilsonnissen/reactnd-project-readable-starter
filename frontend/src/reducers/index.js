@@ -9,9 +9,7 @@ import {
   COMMENTS_LOADED,
   ADD_POST,
   UPDATE_POST,
-  DELETE_POST,
   ADD_COMMENT,
-  DELETE_COMMENT,
   CATEGORIES_LOADED
 } from "../actions";
 
@@ -63,15 +61,6 @@ function posts(state = initialPostsState, action) {
           ...post
         }
       };
-    case DELETE_POST:
-      const deletedPost = {
-        ...state[post.id],
-        deleted: true
-      };
-      return {
-        ...state,
-        [post.id]: deletedPost
-      };
     default:
       return state;
   }
@@ -87,15 +76,6 @@ function comments(state = initialCommentsState, action) {
         [action.comment.id]: {
           ...action.comment
         }
-      };
-    case DELETE_COMMENT:
-      const deletedComment = {
-        ...state[action.comment.id],
-        deleted: true
-      };
-      return {
-        ...state,
-        [action.comment.id]: deletedComment
       };
     case COMMENT_LOADED:
       return {
