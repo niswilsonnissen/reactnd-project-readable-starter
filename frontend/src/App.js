@@ -26,6 +26,12 @@ class App extends Component {
         <Switch>
           <Route exact path="/post/" render={({ history }) => <PostForm />} />
           <Route
+            path="/posts/:page/edit"
+            render={({ history, match }) => (
+              <PostForm page={match.params.page} />
+            )}
+          />
+          <Route
             path="/:category/:page"
             render={({ history, match }) => (
               <PostDetail
@@ -48,9 +54,7 @@ class App extends Component {
         </Switch>
         <div className="footer">
           Udacity student project by Nis Wilson Nissen 2017. Icons by{" "}
-          <a href="https://thenounproject.com/coquet_adrien/">
-            Adrien Coquet
-          </a>{" "}
+          <a href="https://thenounproject.com/coquet_adrien/">Adrien Coquet</a>{" "}
           (<a href="https://creativecommons.org/licenses/by/3.0/us/">
             Creative Commons
           </a>)

@@ -18,6 +18,11 @@ import {
 } from "../actions";
 
 class PostDetail extends Component {
+  handleEditPost = post => {
+    const { history } = this.props;
+    history.push(`/posts/${post.id}/edit`);
+  };
+
   handleDeletePost = post => {
     const { history, deletePost } = this.props;
     deletePost(post);
@@ -63,9 +68,7 @@ class PostDetail extends Component {
             <h3>{post.title}</h3>
             <div className="post-info">
               in{" "}
-              <Link to={`/${post.category.path}/`}>
-                {post.category.name}
-              </Link>{" "}
+              <Link to={`/${post.category.path}/`}>{post.category.name}</Link>{" "}
               by {post.author}
               {formatDate(post.timestamp)}, comments: {sortedComments.length}
             </div>
@@ -104,6 +107,7 @@ class PostDetail extends Component {
           <AdminButtons
             name="post"
             id={post.id}
+            onEditClick={this.handleEditPost}
             onDeleteClick={this.handleDeletePost}
           />
         </div>

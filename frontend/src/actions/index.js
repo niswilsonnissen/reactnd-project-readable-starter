@@ -154,6 +154,33 @@ export function addPost(post) {
   };
 }
 
+export function updatePost(post) {
+  return dispatch => {
+    dispatch(dataSaving(true));
+    return fetch(`http://localhost:3001/posts/${post.id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Basic ${btoa("user:pass")}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title: post.title,
+        body: post.body
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        dispatch(dataSaving(false));
+        return response;
+      })
+      .then(response => response.json())
+      .then(post => dispatch(postLoaded(post)))
+      .then(reason => dispatch(dataSaveError(reason)));
+  };
+}
+
 export function deletePost(post) {
   return dispatch => {
     dispatch(dataSaving(true));
@@ -177,19 +204,6 @@ export function deletePost(post) {
         return dispatch(fetchComments(post));
       })
       .catch(reason => dispatch(dataSaveError(reason)));
-  };
-}
-
-export function updatePost({ id, category, author, title, body }) {
-  return {
-    type: UPDATE_POST,
-    post: {
-      id,
-      category,
-      author,
-      title,
-      body
-    }
   };
 }
 

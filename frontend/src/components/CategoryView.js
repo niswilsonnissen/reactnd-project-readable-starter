@@ -26,6 +26,11 @@ class CategoryView extends Component {
     voteScore: descending("voteScore")
   };
 
+  handleEditPost = post => {
+    const { history } = this.props;
+    history.push(`/posts/${post.id}/edit`);
+  };
+
   componentDidMount() {
     const { fetchCategories, fetchPosts, fetchComments } = this.props;
     fetchCategories().then(() => {
@@ -93,6 +98,7 @@ class CategoryView extends Component {
                 <AdminButtons
                   name="post"
                   id={post.id}
+                  onEditClick={this.handleEditPost}
                   onDeleteClick={deletePost}
                 />
               </div>

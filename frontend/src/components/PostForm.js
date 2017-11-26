@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import uuidv1 from "uuid/v1";
-import { addPost, fetchCategories } from "../actions";
+import { addPost, updatePost, fetchCategories, fetchPost } from "../actions";
 import { capitalize } from "../utils/helpers";
 
 class PostForm extends Component {
@@ -13,40 +13,56 @@ class PostForm extends Component {
     author: ""
   };
 
-  handleAddPost = e => {
+  handleSavePost = e => {
     e.preventDefault();
-    const { history, categories, addPost } = this.props;
-    const newPost = {
-      ...this.state,
-      id: uuidv1(),
-      timestamp: Date.now(),
-      voteScore: 1,
-      deleted: false
-    };
-    addPost(newPost).then(() => {
-      const category = categories.find(c => c.name === newPost.category);
+    const { history, categories, addPost, updatePost, post } = this.props;
+    const savePost = post ? updatePost : addPost;
+    const postData = post
+      ? { ...post, ...this.state }
+      : {
+          ...this.state,
+          id: uuidv1(),
+          timestamp: Date.now(),
+          voteScore: 1,
+          deleted: false
+        };
+    savePost(postData).then(() => {
+      const category = categories.find(c => c.name === postData.category);
       this.setState({
         category: "react",
         title: "",
         body: "",
         author: ""
       });
-      history.push(`/${category.path}/${newPost.id}`);
+      history.push(`/${category.path}/${postData.id}`);
     });
   };
 
   componentDidMount() {
-    const { fetchCategories } = this.props;
-    fetchCategories();
+    const { fetchCategories, fetchPost, page } = this.props;
+    if (page) {
+      fetchCategories().then(() => {
+        fetchPost(page).then(action => {
+          this.setState({
+            category: action.post.category,
+            title: action.post.title,
+            body: action.post.body,
+            author: action.post.author
+          });
+        });
+      });
+    } else {
+      fetchCategories();
+    }
   }
 
   render() {
-    const { categories } = this.props;
+    const { categories, isEditing } = this.props;
     const { category, title, body, author } = this.state;
 
     return (
       <form className="post-form">
-        <h2>Add new post</h2>
+        <h2>{isEditing ? "Edit post" : "Add new post"}</h2>
         <div className="group">
           <label htmlFor="category">Category:</label>
           <select
@@ -93,7 +109,7 @@ class PostForm extends Component {
           />
         </div>
         <div className="group">
-          <button className="btn" onClick={this.handleAddPost}>
+          <button className="btn" onClick={this.handleSavePost}>
             Save post
           </button>{" "}
           or <Link to="/">cancel</Link>
@@ -103,16 +119,39 @@ class PostForm extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  const postId = ownProps.page;
+  const post =
+    typeof state.posts[postId] !== "undefined" ? state.posts[postId] : null;
+
+  if (post) {
+    const category = state.categories.find(
+      category => category.name === post.category
+    );
+    return {
+      isLoading: state.data.isLoading,
+      isEditing: true,
+      categories: state.categories,
+      post: {
+        ...post,
+        category
+      }
+    };
+  }
   return {
-    categories: state.categories
+    isLoading: state.data.isLoading,
+    isEditing: false,
+    categories: state.categories,
+    post: null
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     fetchCategories: data => dispatch(fetchCategories(data)),
-    addPost: data => dispatch(addPost(data))
+    fetchPost: data => dispatch(fetchPost(data)),
+    addPost: data => dispatch(addPost(data)),
+    updatePost: data => dispatch(updatePost(data))
   };
 }
 
