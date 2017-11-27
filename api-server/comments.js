@@ -106,13 +106,13 @@ function disable(token, id) {
   });
 }
 
-function edit(token, id, commentData) {
+function edit(token, id, comment) {
   return new Promise(res => {
     let comments = getData(token);
-    let comment = comments[id];
-    comment.body = commentData.body;
-    comment.timestamp = commentData.timestamp;
-    res(comment);
+    for (const prop in comment) {
+      comments[id][prop] = comment[prop];
+    }
+    res(comments[id]);
   });
 }
 
