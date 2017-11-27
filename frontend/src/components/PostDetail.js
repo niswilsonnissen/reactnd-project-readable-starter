@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
+import ReactModal from "react-modal";
 import { fetchCategories, fetchPost, fetchComments } from "../actions";
 import Voting from "./Voting";
 import AdminButtons from "./AdminButtons";
@@ -18,6 +19,11 @@ import {
 } from "../actions";
 
 class PostDetail extends Component {
+  state = {
+    showEditComment: false,
+    commentToEdit: null
+  };
+
   handleEditPost = post => {
     const { history } = this.props;
     history.push(`/posts/${post.id}/edit`);
@@ -27,6 +33,21 @@ class PostDetail extends Component {
     const { history, deletePost } = this.props;
     deletePost(post);
     history.push("/");
+  };
+
+  handleEditComment = comment => {
+    const commentToEdit = this.props.post.comments.find(
+      c => c.id === comment.id
+    );
+    this.setState({ showEditComment: true, commentToEdit });
+  };
+
+  handleRequestClose = e => {
+    this.setState({ showEditComment: false, commentToEdit: null });
+  };
+
+  handleCommentUpdated = e => {
+    this.handleRequestClose();
   };
 
   componentDidMount() {
@@ -95,6 +116,7 @@ class PostDetail extends Component {
                       <AdminButtons
                         name="comment"
                         id={comment.id}
+                        onEditClick={this.handleEditComment}
                         onDeleteClick={deleteComment}
                       />
                     </div>
@@ -111,6 +133,22 @@ class PostDetail extends Component {
             onDeleteClick={this.handleDeletePost}
           />
         </div>
+        <ReactModal
+          isOpen={this.state.showEditComment}
+          shouldCloseOnEsc={true}
+          onRequestClose={this.handleRequestClose}
+        >
+          <div style={{ textAlign: "right" }}>
+            <button type="button" onClick={this.handleRequestClose}>
+              Close
+            </button>
+          </div>
+          <CommentForm
+            parentId={post.id}
+            commentToEdit={this.state.commentToEdit}
+            onCommentSave={this.handleCommentUpdated}
+          />
+        </ReactModal>
       </div>
     );
   }

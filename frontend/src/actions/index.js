@@ -286,6 +286,33 @@ export function addComment(comment) {
   };
 }
 
+export function updateComment(comment) {
+  return dispatch => {
+    dispatch(dataSaving(true));
+    return fetch(`http://localhost:3001/comments/${comment.id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Basic ${btoa("user:pass")}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        body: comment.body,
+        timestamp: comment.timestamp
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        dispatch(dataSaving(false));
+        return response;
+      })
+      .then(response => response.json())
+      .then(comment => dispatch(commentLoaded(comment)))
+      .catch(reason => dispatch(dataSaveError(reason)));
+  };
+}
+
 export function deleteComment(comment) {
   return dispatch => {
     dispatch(dataSaving(true));

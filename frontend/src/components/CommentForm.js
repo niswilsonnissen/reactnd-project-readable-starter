@@ -1,39 +1,70 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { addComment } from "../actions";
+import { addComment, updateComment } from "../actions";
 import uuidv1 from "uuid/v1";
 
 class CommentForm extends Component {
   state = {
     body: "",
-    author: ""
+    author: "",
+    isEditing: false
   };
 
-  handleAddComment = e => {
+  componentDidMount() {
+    if (this.props.commentToEdit) {
+      const { body, author } = this.props.commentToEdit;
+      this.setState({
+        body,
+        author,
+        isEditing: true
+      });
+    } else {
+      this.setState({
+        body: "",
+        author: "",
+        isEditing: false
+      });
+    }
+  }
+
+  handleSaveComment = e => {
     e.preventDefault();
-    const { parentId, addComment } = this.props;
-    const { body, author } = this.state;
-    const newComment = {
-      id: uuidv1(),
-      timestamp: Date.now(),
+    const {
       parentId,
-      body,
-      author
-    };
-    addComment(newComment);
-    this.setState({
-      body: "",
-      author: ""
+      addComment,
+      updateComment,
+      commentToEdit,
+      onCommentSave
+    } = this.props;
+    const { body, author } = this.state;
+    const saveComment = commentToEdit ? updateComment : addComment;
+    const commentData = commentToEdit
+      ? { ...commentToEdit, ...this.state, timestamp: Date.now() }
+      : {
+          id: uuidv1(),
+          timestamp: Date.now(),
+          parentId,
+          body,
+          author
+        };
+    saveComment(commentData).then(action => {
+      this.setState({
+        body: "",
+        author: ""
+      });
+      if (typeof onCommentSave === "function") {
+        onCommentSave(action.comment);
+      }
     });
   };
 
   render() {
-    const { body, author } = this.state;
+    const { body, author, isEditing } = this.state;
 
     return (
       <form className="post-comment-form">
-        <h4>Add new comment</h4>
+        <h4>{isEditing ? "Edit comment" : "Add new comment"}</h4>
         <div className="group">
           <textarea
             name="body"
@@ -52,11 +83,12 @@ class CommentForm extends Component {
             placeholder="Type your username"
             value={author}
             onChange={e => this.setState({ author: e.target.value })}
+            disabled={this.state.isEditing}
           />
         </div>
         <div className="group">
-          <button className="btn" onClick={this.handleAddComment}>
-            Add comment
+          <button className="btn" onClick={this.handleSaveComment}>
+            {isEditing ? "Save comment" : "Add comment"}
           </button>
         </div>
       </form>
@@ -70,7 +102,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    addComment: data => dispatch(addComment(data))
+    addComment: data => dispatch(addComment(data)),
+    updateComment: data => dispatch(updateComment(data))
   };
 }
 
