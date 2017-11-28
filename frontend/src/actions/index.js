@@ -14,7 +14,6 @@ export const VOTE_POST_DOWN = "VOTE_POST_DOWN";
 
 export const COMMENT_LOADED = "COMMENT_LOADED";
 export const COMMENTS_LOADED = "COMMENTS_LOADED";
-export const COMMENT_SAVED = "COMMENT_SAVED";
 
 export const ADD_COMMENT = "ADD_COMMENT";
 export const UPDATE_COMMENT = "UPDATE_COMMENT";

@@ -8,9 +8,6 @@ import {
   POSTS_LOADED,
   COMMENT_LOADED,
   COMMENTS_LOADED,
-  ADD_POST,
-  UPDATE_POST,
-  ADD_COMMENT,
   CATEGORIES_LOADED
 } from "../actions";
 
@@ -48,20 +45,6 @@ function posts(state = initialPostsState, action) {
         };
       });
       return newState;
-    case ADD_POST:
-      return {
-        ...state,
-        [post.id]: {
-          ...post
-        }
-      };
-    case UPDATE_POST:
-      return {
-        ...state,
-        [post.id]: {
-          ...post
-        }
-      };
     default:
       return state;
   }
@@ -71,13 +54,6 @@ const initialCommentsState = {};
 
 function comments(state = initialCommentsState, action) {
   switch (action.type) {
-    case ADD_COMMENT:
-      return {
-        ...state,
-        [action.comment.id]: {
-          ...action.comment
-        }
-      };
     case COMMENT_LOADED:
       return {
         ...state,
