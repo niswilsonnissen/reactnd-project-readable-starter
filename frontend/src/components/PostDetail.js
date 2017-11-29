@@ -54,7 +54,10 @@ class PostDetail extends Component {
     const { fetchCategories, fetchPost, fetchComments, page } = this.props;
     fetchCategories().then(() => {
       fetchPost(page).then(() => {
-        fetchComments(this.props.post);
+        const { post } = this.props;
+        if (post && !post.deleted) {
+          fetchComments(post);
+        }
       });
     });
   }
@@ -71,7 +74,19 @@ class PostDetail extends Component {
     } = this.props;
 
     if (isLoading || !post) {
-      return <p>Loading post ...</p>;
+      return (
+        <div style={{ textAlign: "center", padding: "32px" }}>
+          <p>Loading post ...</p>
+        </div>
+      );
+    }
+
+    if (post.deleted) {
+      return (
+        <div style={{ textAlign: "center", padding: "32px" }}>
+          <strong>Post not found!</strong>
+        </div>
+      );
     }
 
     let sortedComments = [...post.comments];

@@ -100,7 +100,12 @@ export function fetchPost(page) {
         return response;
       })
       .then(response => response.json())
-      .then(post => dispatch(postLoaded(post)))
+      .then(post => {
+        if (!post.id) {
+          return dispatch(postLoaded({ id: page, deleted: true }));
+        }
+        return dispatch(postLoaded(post));
+      })
       .catch(reason => dispatch(dataLoadError(reason)));
   };
 }

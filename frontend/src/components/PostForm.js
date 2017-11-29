@@ -70,6 +70,7 @@ class PostForm extends Component {
             id="category"
             value={category}
             onChange={e => this.setState({ category: e.target.value })}
+            disabled={isEditing}
           >
             {categories.map(c => (
               <option key={c.path} value={c.path}>
@@ -106,6 +107,7 @@ class PostForm extends Component {
             id="author"
             value={author}
             onChange={e => this.setState({ author: e.target.value })}
+            disabled={isEditing}
           />
         </div>
         <div className="group">
