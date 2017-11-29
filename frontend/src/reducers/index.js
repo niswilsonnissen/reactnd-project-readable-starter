@@ -9,7 +9,7 @@ import {
   COMMENT_LOADED,
   COMMENTS_LOADED,
   CATEGORIES_LOADED
-} from "../actions";
+} from "../actions/types";
 
 const initialCategoriesState = [];
 

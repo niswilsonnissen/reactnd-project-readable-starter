@@ -1,0 +1,24 @@
+export const DATA_LOADING = "DATA_LOADING";
+export const DATA_LOAD_ERROR = "DATA_LOAD_ERROR";
+export const DATA_SAVING = "DATA_SAVING";
+export const DATA_SAVE_ERROR = "DATA_SAVE_ERROR";
+
+export const POST_LOADED = "POST_LOADED";
+export const POSTS_LOADED = "POSTS_LOADED";
+
+export const ADD_POST = "ADD_POST";
+export const UPDATE_POST = "UPDATE_POST";
+
+export const VOTE_POST_UP = "VOTE_POST_UP";
+export const VOTE_POST_DOWN = "VOTE_POST_DOWN";
+
+export const COMMENT_LOADED = "COMMENT_LOADED";
+export const COMMENTS_LOADED = "COMMENTS_LOADED";
+
+export const ADD_COMMENT = "ADD_COMMENT";
+export const UPDATE_COMMENT = "UPDATE_COMMENT";
+
+export const VOTE_COMMENT_UP = "VOTE_COMMENT_UP";
+export const VOTE_COMMENT_DOWN = "VOTE_COMMENT_DOWN";
+
+export const CATEGORIES_LOADED = "CATEGORIES_LOADED";
