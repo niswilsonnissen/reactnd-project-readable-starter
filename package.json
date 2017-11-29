@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "btoa": "^1.1.2",
-    "react-router-dom": "^4.2.2",
-    "redux-thunk": "^2.2.0",
-    "uuid": "^3.1.0"
-  }
-}

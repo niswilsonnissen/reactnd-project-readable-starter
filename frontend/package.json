@@ -11,8 +11,11 @@
     "react-modal": "^3.1.4",
     "react-redux": "^5.0.6",
     "react-scripts": "1.0.14",
+    "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "btoa": "^1.1.2",
+    "uuid": "^3.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
