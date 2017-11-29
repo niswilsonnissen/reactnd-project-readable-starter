@@ -1,36 +1,28 @@
-import React, { Component } from "react";
+import React from "react";
 
-class AdminButtons extends Component {
-  handleDeleteClick = e => {
-    const { id } = this.props;
+const AdminButtons = props => {
+  const handleDeleteClick = e => {
+    const { id } = props;
     e.preventDefault();
-    this.props.onDeleteClick({ id });
+    props.onDeleteClick({ id });
   };
 
-  handleEditClick = e => {
-    const { id } = this.props;
+  const handleEditClick = e => {
+    const { id } = props;
     e.preventDefault();
-    this.props.onEditClick({ id });
+    props.onEditClick({ id });
   };
 
-  render() {
-    return (
-      <div className="admin">
-        <button
-          title={`Edit ${this.props.name}`}
-          onClick={this.handleEditClick}
-        >
-          <span className="icon icon-edit" />
-        </button>
-        <button
-          title={`Delete ${this.props.name}`}
-          onClick={this.handleDeleteClick}
-        >
-          <span className="icon icon-delete" />
-        </button>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="admin">
+      <button title={`Edit ${props.name}`} onClick={handleEditClick}>
+        <span className="icon icon-edit" />
+      </button>
+      <button title={`Delete ${props.name}`} onClick={handleDeleteClick}>
+        <span className="icon icon-delete" />
+      </button>
+    </div>
+  );
+};
 
 export default AdminButtons;
