@@ -12,8 +12,12 @@ If you just downloaded the code you should install the packages first by
 running:
 
 ```
-$> yarn add
+$> yarn install
 ```
+or
+```
+$> npm install
+``` 
 
 inside both `api-server` and the `frontend` folder for the projects.
 
@@ -23,6 +27,10 @@ both folders and run the following command:
 ```
 $> yarn start
 ```
+or
+``` 
+$> npm start
+``` 
 
 ## All things related to Create React App
 

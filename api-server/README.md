@@ -6,8 +6,8 @@ directory:
 * `npm install`
 * `node server`
 
-**Please see the `README.md` in the `frontend` folder on how to run the projects
-together**
+**Please see the [`README.md`](../frontend/README.md) in the `frontend` folder
+on how to run the projects together**
 
 ## Using The Server
 
